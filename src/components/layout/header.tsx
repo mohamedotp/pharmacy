@@ -6,13 +6,26 @@ import { Bell, Search, HelpCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { QuickDispenseModal } from "@/components/pos/quick-dispense-modal";
+import { GlobalSearchDialog } from "@/components/layout/global-search-dialog";
 import { useAuthStore } from "@/store/auth-store";
 import { supabase } from "@/lib/supabase";
 
 export function Header() {
   const [isQuickDispenseOpen, setIsQuickDispenseOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { user, pharmacy, fetchProfile } = useAuthStore();
   const [alertCount, setAlertCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "F1" || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k")) {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     fetchProfile();
@@ -89,15 +102,19 @@ export function Header() {
         </div>
 
         {/* Search Bar (Middle) */}
-        <div className="flex-1 max-w-xl mx-12">
-          <div className="relative group">
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors" size={18} />
-            <Input 
-              placeholder="بحث متقدم (F1)..." 
-              className="w-full bg-slate-50/50 border-slate-200 pr-12 h-11 focus-visible:ring-primary/20 rounded-xl transition-all"
-            />
-          </div>
-        </div>
+        {/* <div className="flex-1 max-w-xl mx-12">
+          <button 
+            type="button"
+            onClick={() => setIsSearchOpen(true)}
+            className="w-full relative group flex items-center bg-slate-50/50 border border-slate-200 hover:border-slate-300 focus:outline-none pr-12 pl-4 h-11 rounded-xl transition-all cursor-pointer text-slate-400 focus-within:ring-2 focus-within:ring-primary/20"
+          >
+            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-slate-600 transition-colors" size={18} />
+            <span className="text-sm font-bold text-slate-400/80">بحث متقدم (F1 أو Ctrl+K)...</span>
+            <kbd className="absolute left-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-slate-200 bg-white px-1.5 font-mono text-[9px] font-medium text-slate-400">
+              Ctrl+K
+            </kbd>
+          </button>
+        </div> */}
 
         {/* Actions & User Profile (Left in RTL) */}
         <div className="flex items-center gap-6">
@@ -141,6 +158,11 @@ export function Header() {
       <QuickDispenseModal 
         isOpen={isQuickDispenseOpen} 
         onClose={() => setIsQuickDispenseOpen(false)} 
+      />
+
+      <GlobalSearchDialog 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
       />
     </>
   );

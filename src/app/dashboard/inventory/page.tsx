@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Plus, Download, Filter, Edit, Trash2, ArrowUpRight, Clock, AlertTriangle, CheckCircle2, Eye, Calendar, Building2, PackageCheck, Printer, Receipt, TrendingUp, TrendingDown, ClipboardCheck, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,8 +31,10 @@ const initialForm = {
   pill_barcode: "",
 };
 
-export default function InventoryPage() {
+function InventoryContent() {
   const { user } = useAuthStore();
+  const searchParams = useSearchParams();
+  const idParam = searchParams.get("id");
   const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -113,6 +116,15 @@ export default function InventoryPage() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (idParam && products.length > 0) {
+      const product = products.find((p) => p.id === idParam);
+      if (product) {
+        handleOpenDetails(product);
+      }
+    }
+  }, [idParam, products]);
 
   // Barcode keyboard listener for inventory page search
   useEffect(() => {
@@ -1821,5 +1833,13 @@ export default function InventoryPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+export default function InventoryPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-slate-500 font-bold">جاري تحميل المخزون...</div>}>
+      <InventoryContent />
+    </Suspense>
   );
 }

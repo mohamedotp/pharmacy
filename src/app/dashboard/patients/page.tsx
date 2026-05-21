@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Search, UserPlus, Phone, MessageCircle, Edit, Trash2, FileText, ShoppingBag, Award, HeartPulse, User, AlertTriangle, CheckCircle2, Clock, ChevronRight, ReceiptText, Eye, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/store/auth-store";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 type Patient = {
   id: string;
@@ -307,8 +308,9 @@ const initialPatient = {
   refill_notes: "",
 };
 
-export default function PatientsPage() {
+function PatientsContent() {
   const { user } = useAuthStore();
+  const searchParams = useSearchParams();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -414,6 +416,17 @@ export default function PatientsPage() {
       fetchPatientSales(selectedPatient.id);
     }
   }, [selectedPatient]);
+
+  const targetId = searchParams.get("id");
+
+  useEffect(() => {
+    if (targetId && patients.length > 0) {
+      const matched = patients.find(p => p.id === targetId);
+      if (matched) {
+        setSelectedPatient(matched);
+      }
+    }
+  }, [targetId, patients]);
 
   const fetchPatientSales = async (patientId: string) => {
     setIsSalesLoading(true);
@@ -574,8 +587,10 @@ export default function PatientsPage() {
     const { data, error } = await query;
     if (!error && data) {
       setPatients(data);
-      if (data.length > 0 && !selectedPatient) {
-        setSelectedPatient(data[0]);
+      if (data.length > 0) {
+        const targetId = searchParams.get("id");
+        const matched = targetId ? data.find(p => p.id === targetId) : null;
+        setSelectedPatient(matched || data[0]);
       }
     }
     setLoading(false);
@@ -1300,5 +1315,17 @@ export default function PatientsPage() {
       </Dialog>
 
     </div>
+  );
+}
+
+export default function PatientsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <PatientsContent />
+    </Suspense>
   );
 }
