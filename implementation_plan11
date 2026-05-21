@@ -1,0 +1,161 @@
+# خطة التطوير الشاملة: ترقية الصيدلية لمطابقة نظام B-Connect (e-Plus) المتقدم
+
+تتضمن هذه الخطة تفصيلاً كاملاً لدمج الميزات الـ 8 الأكثر شهرة وقوة في برنامج **B-Connect (e-Plus)** لإدارة الصيدليات وتوزيع الأدوية في السوق المصري، لترقية النظام الحالي إلى مستوى متكامل للمؤسسات وسلاسل الصيدليات الكبرى.
+
+---
+
+## ⚠️ مراجعة المستخدم مطلوبة (User Review Required)
+
+> [!IMPORTANT]
+> تنفيذ هذه الميزات يتطلب بعض التعديلات الجوهرية في قاعدة البيانات (مثل إضافة أعمدة جديدة للباركود المتعدد والتعاقدات التأمينية، البونص والمشتريات). لقد قمنا بتوزيع التغييرات على مخططات قاعدة البيانات دون أي تأثير سلبي على البيانات الحالية لتأمين استقرار الصيدلية بنسبة 100%.
+
+> [!WARNING]
+> نظام التأمين الصحي والتعاقدات سيعتمد على نموذج الفواتير الآجلة، حيث يتم تقسيم الفاتورة مالياً بين جزء يدفعه المريض كنسبة تحمل (Copay) وجزء يتم تحميله على حساب شركة التأمين كمديونية مستحقة للصيدلية.
+
+---
+
+## ❓ أسئلة مفتوحة للتأكيد (Open Questions)
+
+> [!IMPORTANT]
+> **يرجى مراجعة الأسئلة التالية وتوفير توجيهاتك لتأكيد تفاصيل التصميم:**
+> 1. **تنسيق ملف استيراد المشتريات (B2B):** هل تفضل أن ندعم تنسيقاً مرناً يتيح لك تحديد الأعمدة (Mapping Wizard) لأي ملف Excel/CSV مورد، أم نعتمد قالباً ثابتاً لـ (الشركة المتحدة للصيادلة) كبداية؟
+> 2. **طباعة الباركود المحلي:** هل تفضل توليد باركود تلقائي بتنسيق EAN-13 القياسي، أم باركود قصير مخصص للصيدلية؟ وما هو مقاس الملصقات الحرارية المعتمد لديك (مثلاً 38x25 ملم الأكثر شيوعاً)؟
+> 3. **شركات التأمين والتعاقدات:** هل ترغب في تفعيل موافقة الطبيب أو إدارة رقم بطاقة التأمين لكل مريض كشرط لإتمام العملية؟
+
+---
+
+## 🛠️ تفاصيل الميزات المقترح تنفيذها (The 8 Key Features)
+
+### الميزة 1: كشكول النواقص الفوري في الـ POS (POS Missing Notepad)
+* **آلية العمل:** عند كتابة صنف غير متوفر في شريط بحث الـ POS، يظهر زر مميز "أضف كصنف ناقص 📝". عند الضغط عليه، تفتح نافذة منبثقة بتصميم فاخر مسبقة الملء باسم الدواء، لإدخال الكمية وملاحظة اختيارية للعميل، ويتم تسجيلها فوراً في جدول `urgent_requests` بنوع `missing_drug`.
+
+### الميزة 2: البحث الموحد والذكي في الـ POS (Unified Smart Search)
+* **آلية العمل:** دمج حقول البحث. يقوم النظام بفحص الاسم التجاري، والمادة الفعالة، والباركود بالتوازي في نفس صندوق البحث دون تبديل الفلاتر، مع إبراز الأصناف ذات المواد الفعالة المتطابقة في لوحة بصرية جانبية لمساعدة الصيدلي في اقتراح البدائل بسرعة فائقة.
+
+### الميزة 3: الباركود المتعدد للوحدات الكسرية (Multi-Unit Barcode Mapping)
+* **آلية العمل:** إضافة حقل `strip_barcode` و `pill_barcode` إلى جدول المنتجات `products`. عند مسح باركود العلبة يضيف علبة، وعند مسح باركود الشريط أو الحبة يدرجها بالسعر والتقسيم والوزن الصحيح تلقائياً في السلة.
+
+### الميزة 4: استيراد فواتير الشراء إلكترونياً B2B (B2B Purchases Electronic Uploader)
+* **آلية العمل:** إضافة منطقة إسقاط ملفات (Drag & Drop) في صفحة المشتريات لاستيراد ملفات الفواتير (Excel/CSV). يقوم معالج الاستيراد بقراءة البيانات وتسكين بنود الفاتورة والكميات والتواريخ تلقائياً لمراجعتها وحفظها.
+
+### الميزة 5: احتساب البونص والخصومات الإضافية في تكلفة الشراء (Bonus & Discount Purchase Costing)
+* **آلية العمل:** تعديل شاشة وجدول المشتريات لدعم حقل "الكمية المجانية البونص (Bonus)" ونسبة "الخصم الإضافي". يقوم النظام بحساب التكلفة الفعلية الدقيقة للقطعة وتحديث أسعار التكلفة في FIFO بناءً على ذلك.
+
+### الميزة 6: منظومة التعاقدات والتأمين الصحي (Insurance & Co-Payment Engine)
+* **آلية العمل:** إنشاء جدول `insurance_contracts` لتسجيل الجهات المتعاقدة ونسب الخصم والتحمل. في شاشة POS، يتم تحديد جهة التعاقد للمريض ليقوم النظام بفصل الإجماليات: (كاش يتحمله المريض) و (آجل تأميني يُحسب مديونية على شركة التأمين).
+
+### الميزة 7: جلسات مرتجعات الموردين للأدوية الراكدة والتالفة (Supplier Returns Sessions)
+* **آلية العمل:** واجهة متكاملة لإعداد شحنات المرتجعات للموردين للأدوية منتهية الصلاحية أو الراكدة، لتسجيل الحركات بالخصم وتحديث كشف حساب المورد المالي تلقائياً.
+
+### الميزة 8: توليد وطباعة الباركود المحلي (Local Barcode Generator & Thermal Printer)
+* **آلية العمل:** أداة لتوليد باركود دولي افتراضي للأصناف التركيبية أو التجميلية، مع خيار طباعة ملصق الباركود بتنسيق SVG متناسق مع الطابعات الحرارية القياسية (Thermal Printer 38x25mm).
+
+---
+
+## 📂 التغييرات المقترحة في قاعدة البيانات (Database Migrations)
+
+سنقوم بتشغيل هجرة بيانات SQL لإضافة الجداول والأعمدة التالية لتأمين الميزات الجديدة:
+
+```sql
+-- 1. إضافة أعمدة الباركود للوحدات الكسرية في المنتجات
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS strip_barcode VARCHAR(100);
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS pill_barcode VARCHAR(100);
+
+-- 2. تعديل جدول تفاصيل المشتريات لدعم البونص والخصومات الإضافية
+ALTER TABLE public.purchase_items ADD COLUMN IF NOT EXISTS bonus_quantity INTEGER DEFAULT 0;
+ALTER TABLE public.purchase_items ADD COLUMN IF NOT EXISTS extra_discount_percent DECIMAL(5,2) DEFAULT 0.00;
+
+-- 3. إنشاء جدول جهات التعاقد والتأمين الصحي (Insurance Contracts)
+CREATE TABLE IF NOT EXISTS public.insurance_contracts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    discount_percent DECIMAL(5,2) DEFAULT 0.00,
+    patient_copay_percent DECIMAL(5,2) DEFAULT 100.00, -- النسبة التي يدفعها المريض
+    notes TEXT,
+    pharmacy_id UUID REFERENCES public.pharmacies(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 4. ربط المبيعات بعقود التأمين وتقسيم المبالغ
+ALTER TABLE public.sales ADD COLUMN IF NOT EXISTS insurance_contract_id UUID REFERENCES public.insurance_contracts(id) ON DELETE SET NULL;
+ALTER TABLE public.sales ADD COLUMN IF NOT EXISTS insurance_paid_amount DECIMAL(10,2) DEFAULT 0.00;
+ALTER TABLE public.sales ADD COLUMN IF NOT EXISTS patient_copay_amount DECIMAL(10,2) DEFAULT 0.00;
+
+-- 5. جدول جلسات مرتجع الموردين (Supplier Returns)
+CREATE TABLE IF NOT EXISTS public.supplier_returns (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    invoice_number VARCHAR(100) NOT NULL,
+    supplier_id UUID REFERENCES public.suppliers(id) ON DELETE CASCADE,
+    subtotal DECIMAL(10,2) NOT NULL,
+    tax DECIMAL(10,2) DEFAULT 0.00,
+    total DECIMAL(10,2) NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    pharmacy_id UUID REFERENCES public.pharmacies(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS public.supplier_return_items (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    return_id UUID REFERENCES public.supplier_returns(id) ON DELETE CASCADE,
+    product_id UUID REFERENCES public.products(id) ON DELETE CASCADE,
+    batch_id UUID REFERENCES public.product_batches(id) ON DELETE SET NULL,
+    quantity INTEGER NOT NULL,
+    unit_cost DECIMAL(10,2) NOT NULL,
+    total_cost DECIMAL(10,2) NOT NULL,
+    reason VARCHAR(100) DEFAULT 'expired', -- 'expired', 'slow_moving', 'damaged'
+    pharmacy_id UUID REFERENCES public.pharmacies(id) ON DELETE CASCADE
+);
+
+-- تفعيل الـ RLS للجداول الجديدة
+ALTER TABLE public.insurance_contracts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.supplier_returns ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.supplier_return_items ENABLE ROW LEVEL SECURITY;
+
+-- سياسات الوصول الأمن (Tenant RLS Policies)
+CREATE POLICY insurance_tenant_policy ON public.insurance_contracts
+    FOR ALL USING (pharmacy_id = get_my_pharmacy_id()) WITH CHECK (pharmacy_id = get_my_pharmacy_id());
+
+CREATE POLICY supplier_returns_tenant_policy ON public.supplier_returns
+    FOR ALL USING (pharmacy_id = get_my_pharmacy_id()) WITH CHECK (pharmacy_id = get_my_pharmacy_id());
+
+CREATE POLICY supplier_return_items_tenant_policy ON public.supplier_return_items
+    FOR ALL USING (pharmacy_id = get_my_pharmacy_id()) WITH CHECK (pharmacy_id = get_my_pharmacy_id());
+```
+
+---
+
+## 📂 التعديلات المقترحة في كود المشروع (Components & Pages)
+
+نقترح تقسيم العمل إلى 4 مراحل متتالية ومنظمة لضمان أعلى مستويات الأمان:
+
+### المرحلة 1: شاشة البيع المتقدمة (POS Next-Gen Features)
+* **[MODIFY] [pos-store.ts](file:///d:/projects/pharmacy/src/store/pos-store.ts):** تعديل منطق الإضافة للسلة ليدعم فحص الباركود المتعدد (علبة/شريط/حبة) وحساب الأسعار آلياً بناءً على الباركود الممسوح، بالإضافة لتوسيع البحث ليشمل المواد الفعالة بالتوازي.
+* **[MODIFY] [pos/page.tsx](file:///d:/projects/pharmacy/src/app/dashboard/pos/page.tsx):** 
+  * إضافة حقل البحث الموحد.
+  * إضافة زر "تسجيل صنف ناقص 📝" السريع لفتح مودال النواقص وإرسالها لـ `urgent_requests` مباشرة عند البحث وعدم العثور على الدواء.
+  * إضافة خيار "جهة التعاقد / التأمين الصحي" عند اختيار المريض، وحساب الإجمالي بعد تطبيق الخصم والتقسيم المالي.
+
+### المرحلة 2: المشتريات الذكية واستيراد الفواتير (B2B Purchases)
+* **[MODIFY] [purchases/page.tsx](file:///d:/projects/pharmacy/src/app/dashboard/purchases/page.tsx):**
+  * إضافة منطقة رفع ملفات Excel/CSV للفواتير المستوردة مع معالج Mapping ذكي لربط الأعمدة.
+  * إضافة حقول "البونص" ونسبة "الخصم الإضافي" لجدول البنود المشتراة وتأثيرها المالي على سعر القطعة.
+  * تعديل دالة الحفظ لتسجيل التكلفة المخفضة للباتش في المخازن بدقة.
+
+### المرحلة 3: مرتجعات الموردين وتوليد الباركود (Supplier Returns & Barcoding)
+* **[NEW] [returns/page.tsx](file:///d:/projects/pharmacy/src/app/dashboard/purchases/returns/page.tsx):** صفحة جديدة متكاملة لإعداد فواتير وجلسات إرجاع الأدوية الراكدة والتالفة للموردين لتسوية الحسابات.
+* **[MODIFY] [inventory/page.tsx](file:///d:/projects/pharmacy/src/app/dashboard/inventory/page.tsx):** 
+  * إضافة حقول الباركودات المتعددة (علبة/شريط/حبة) لبطاقة الدواء.
+  * إضافة زر "توليد باركود محلي 🏷️" للأصناف التجميلية مع خيار الطباعة الحرارية المباشرة بتنسيق SVG.
+
+---
+
+## 📈 خطة التحقق والجاهزية (Verification Plan)
+
+### الاختبارات التلقائية والتوافقية
+* تشغيل اختبار بناء المشروع `npm run build` للتأكد من توافق TypeScript وهياكل البيانات تماماً.
+
+### الاختبارات اليدوية (على بيئة التطوير)
+1. **اختبار النواقص في الـ POS:** كتابة اسم دواء غير متوفر وتأكيد تسجيله كصنف ناقص، والتحقق من ظهوره الفوري في شاشة الطلبات العاجلة.
+2. **اختبار الباركود المتعدد:** إدخال باركود للعلبة وباركود آخر للشريط، ومحاكاة مسح كل منهما للتأكد من إدراج المنتج بالكمية والوحدة الصحيحة تلقائياً في السلة.
+3. **اختبار استيراد ملفات المشتريات:** رفع ملف CSV للمشتريات ومطابقة الأعمدة والتحقق من قراءته بنجاح تام وتنزيل الأصناف في جدول المراجعة.
+4. **اختبار التأمين الصحي:** إتمام عملية بيع تعاقدية لمريض والتحقق من حساب نسبة الكاش ونسبة التأمين وتوزيع القيود المالية بدقة.

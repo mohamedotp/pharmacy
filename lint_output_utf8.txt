@@ -1,0 +1,516 @@
+﻿
+> pharmacy@0.1.0 lint
+> eslint
+
+
+D:\projects\pharmacy\src\app\actions\users.ts
+   4:10  warning  'supabase' is defined but never used             @typescript-eslint/no-unused-vars
+  35:38  warning  'fetchError' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\app\admin\page.tsx
+   9:3  warning  'Users' is defined but never used         @typescript-eslint/no-unused-vars
+  20:3  warning  'MoreVertical' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\app\dashboard\inventory\page.tsx
+  75:10  warning  'adjustmentBatches' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\app\dashboard\notifications\page.tsx
+    5:45  warning  'ChevronDown' is defined but never used                                @typescript-eslint/no-unused-vars
+    5:58  warning  'ChevronUp' is defined but never used                                  @typescript-eslint/no-unused-vars
+    6:63  warning  'Filter' is defined but never used                                     @typescript-eslint/no-unused-vars
+    6:71  warning  'X' is defined but never used                                          @typescript-eslint/no-unused-vars
+   45:10  warning  'expandedItems' is assigned a value but never used                     @typescript-eslint/no-unused-vars
+   53:19  warning  'lowStock' is assigned a value but never used                          @typescript-eslint/no-unused-vars
+  129:9   warning  'toggleExpand' is assigned a value but never used                      @typescript-eslint/no-unused-vars
+  132:7   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+D:\projects\pharmacy\src\app\dashboard\page.tsx
+  149:6  warning  React Hook useCallback has an unnecessary dependency: 'user'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\projects\pharmacy\src\app\dashboard\patients\page.tsx
+    4:148  warning  'ChevronRight' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+  395:13   error    Error: Cannot access variable before it is declared
+
+`fetchPatients` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\patients\page.tsx:395:13
+  393 |
+  394 |       // Refresh data
+> 395 |       await fetchPatients();
+      |             ^^^^^^^^^^^^^ `fetchPatients` accessed before it is declared
+  396 |       setSelectedPatient({
+  397 |         ...selectedPatient,
+  398 |         balance: newBalance
+
+D:\projects\pharmacy\src\app\dashboard\patients\page.tsx:565:3
+  563 |   };
+  564 |
+> 565 |   const fetchPatients = async () => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 566 |     setLoading(true);
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 567 |     let query = supabase.from('patients').select('*').order('created_at', { ascending: false });
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 581 |     setLoading(false);
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 582 |   };
+      | ^^^^^ `fetchPatients` is declared here
+  583 |
+  584 |   const handleOpenAdd = () => {
+  585 |     setFormData({                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react-hooks/immutability
+  409:6    warning  React Hook useEffect has a missing dependency: 'fetchPatients'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+  413:7    error    Error: Cannot access variable before it is declared
+
+`fetchPatientUrgentRequests` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\patients\page.tsx:413:7
+  411 |   useEffect(() => {
+  412 |     if (selectedPatient) {
+> 413 |       fetchPatientUrgentRequests(selectedPatient.id);
+      |       ^^^^^^^^^^^^^^^^^^^^^^^^^^ `fetchPatientUrgentRequests` accessed before it is declared
+  414 |       fetchPatientSales(selectedPatient.id);
+  415 |     }
+  416 |   }, [selectedPatient]);
+
+D:\projects\pharmacy\src\app\dashboard\patients\page.tsx:430:3
+  428 |   };
+  429 |
+> 430 |   const fetchPatientUrgentRequests = async (patientId: string) => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 431 |     const { data } = await supabase
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 432 |       .from('urgent_requests')
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 433 |       .select('*')
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 434 |       .eq('patient_id', patientId)
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 435 |       .order('created_at', { ascending: false })
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 436 |       .limit(5);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 437 |     setUrgentRequests(data || []);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 438 |   };
+      | ^^^^^ `fetchPatientUrgentRequests` is declared here
+  439 |
+  440 |   const handleSendUrgentRequest = async () => {
+  441 |     if (!urgentDrug.trim() || !selectedPatient) return;  react-hooks/immutability
+  414:7    error    Error: Cannot access variable before it is declared
+
+`fetchPatientSales` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\patients\page.tsx:414:7
+  412 |     if (selectedPatient) {
+  413 |       fetchPatientUrgentRequests(selectedPatient.id);
+> 414 |       fetchPatientSales(selectedPatient.id);
+      |       ^^^^^^^^^^^^^^^^^ `fetchPatientSales` accessed before it is declared
+  415 |     }
+  416 |   }, [selectedPatient]);
+  417 |
+
+D:\projects\pharmacy\src\app\dashboard\patients\page.tsx:418:3
+  416 |   }, [selectedPatient]);
+  417 |
+> 418 |   const fetchPatientSales = async (patientId: string) => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 419 |     setIsSalesLoading(true);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 420 |     const { data, error } = await supabase
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 427 |     setIsSalesLoading(false);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 428 |   };
+      | ^^^^^ `fetchPatientSales` is declared here
+  429 |
+  430 |   const fetchPatientUrgentRequests = async (patientId: string) => {
+  431 |     const { data } = await supabase                                                                                                                                                                                                                                                                                                                                                                                                             react-hooks/immutability
+
+D:\projects\pharmacy\src\app\dashboard\pos\page.tsx
+  321:41  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. This value was memoized in source but not in compilation output.
+
+D:\projects\pharmacy\src\app\dashboard\pos\page.tsx:321:41
+  319 |   const [syncingOffline, setSyncingOffline] = useState(false);
+  320 |
+> 321 |   const handleSyncOffline = useCallback(async () => {
+      |                                         ^^^^^^^^^^^^^
+> 322 |     if (store.offlineQueue && store.offlineQueue.length > 0) {
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 323 |       setSyncingOffline(true);
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 331 |     }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 332 |   }, [store]);
+      | ^^^^ Could not preserve existing memoization
+  333 |
+  334 |   useEffect(() => {
+  335 |     const handleOnline = () => {  react-hooks/preserve-manual-memoization
+  332:7   error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. This dependency may be mutated later, which could cause the value to change unexpectedly.
+
+D:\projects\pharmacy\src\app\dashboard\pos\page.tsx:332:7
+  330 |       }
+  331 |     }
+> 332 |   }, [store]);
+      |       ^^^^^ This dependency may be modified later
+  333 |
+  334 |   useEffect(() => {
+  335 |     const handleOnline = () => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           react-hooks/preserve-manual-memoization
+  493:6   warning  React Hook useEffect has a missing dependency: 'store'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-hooks/exhaustive-deps
+  588:6   warning  React Hook useEffect has a missing dependency: 'store'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-hooks/exhaustive-deps
+
+D:\projects\pharmacy\src\app\dashboard\prescriptions\[id]\page.tsx
+   21:9   warning  'router' is assigned a value but never used                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   39:6   warning  React Hook useEffect has a missing dependency: 'fetchPrescriptionData'. Either include it or remove the dependency array                                                                                                                        react-hooks/exhaustive-deps
+   77:6   warning  React Hook useEffect has a missing dependency: 'prescription'. Either include it or remove the dependency array. You can also do a functional update 'setPrescription(p => ...)' if you only need 'prescription' in the 'setPrescription' call  react-hooks/exhaustive-deps
+  259:33  warning  'index' is defined but never used                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\app\dashboard\prescriptions\new\page.tsx
+  43:6  warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\projects\pharmacy\src\app\dashboard\prescriptions\page.tsx
+   4:34  warning  'ChevronRight' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  24:7   error    Error: Cannot access variable before it is declared
+
+`fetchPrescriptions` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\prescriptions\page.tsx:24:7
+  22 |   useEffect(() => {
+  23 |     if (user?.pharmacy_id) {
+> 24 |       fetchPrescriptions();
+     |       ^^^^^^^^^^^^^^^^^^ `fetchPrescriptions` accessed before it is declared
+  25 |     }
+  26 |   }, [user]);
+  27 |
+
+D:\projects\pharmacy\src\app\dashboard\prescriptions\page.tsx:28:3
+  26 |   }, [user]);
+  27 |
+> 28 |   async function fetchPrescriptions() {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 29 |     const { data, error } = await supabase
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 30 |       .from('prescriptions')
+     ΓÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 40 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 41 |   }
+     | ^^^^ `fetchPrescriptions` is declared here
+  42 |
+  43 |   const handleDelete = async (id: string) => {
+  44 |     if (confirm("┘ç┘ä ╪ú┘å╪¬ ┘à╪¬╪ú┘â╪» ┘à┘å ╪¡╪░┘ü ┘ç╪░┘ç ╪º┘ä┘ê╪╡┘ü╪⌐╪ƒ")) {  react-hooks/immutability
+  26:6   warning  React Hook useEffect has a missing dependency: 'fetchPrescriptions'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-hooks/exhaustive-deps
+
+D:\projects\pharmacy\src\app\dashboard\purchases\list\page.tsx
+    4:10   warning  'Search' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+    4:32   warning  'Calendar' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+    4:42   warning  'User' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+    4:48   warning  'Phone' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+    4:55   warning  'MapPin' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+    4:63   warning  'Mail' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+    4:69   warning  'Building2' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+    4:108  warning  'Banknote' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+    4:118  warning  'Clock' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+    4:125  warning  'FileText' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+    4:135  warning  'ArrowRight' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+    4:147  warning  'Truck' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+    4:154  warning  'MoreVertical' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   33:23   warning  'setSearchQuery' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   67:5    error    Error: Cannot access variable before it is declared
+
+`fetchData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\purchases\list\page.tsx:67:5
+  65 |
+  66 |   useEffect(() => {
+> 67 |     fetchData();
+     |     ^^^^^^^^^ `fetchData` accessed before it is declared
+  68 |   }, [user]);
+  69 |
+  70 |   const fetchData = async () => {
+
+D:\projects\pharmacy\src\app\dashboard\purchases\list\page.tsx:70:3
+   68 |   }, [user]);
+   69 |
+>  70 |   const fetchData = async () => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  71 |     if (!user) return;
+      | ^^^^^^^^^^^^^^^^^^^^^^
+>  72 |     setLoading(true);
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 119 |     }
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 120 |   };
+      | ^^^^^ `fetchData` is declared here
+  121 |
+  122 |   const handleOpenAdd = () => {
+  123 |     setFormData({  react-hooks/immutability
+   68:6    warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         react-hooks/exhaustive-deps
+  199:14   warning  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\app\dashboard\purchases\page.tsx
+   61:61  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\projects\pharmacy\src\app\dashboard\purchases\page.tsx:61:61
+  59 |   const [oldItems, setOldItems] = useState<any[]>([]);
+  60 |
+> 61 |   const [invoiceNumber, setInvoiceNumber] = useState(`PUR-${Date.now().toString().slice(-6)}`);
+     |                                                             ^^^^^^^^^^ Cannot call impure function
+  62 |   const [supplierId, setSupplierId] = useState("");
+  63 |   const [suppliers, setSuppliers] = useState<any[]>([]);
+  64 |   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         react-hooks/purity
+  106:5   error  Error: Cannot access variable before it is declared
+
+`fetchSuppliers` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\purchases\page.tsx:106:5
+  104 |
+  105 |   useEffect(() => {
+> 106 |     fetchSuppliers();
+      |     ^^^^^^^^^^^^^^ `fetchSuppliers` accessed before it is declared
+  107 |     fetchProducts();
+  108 |     if (editId) {
+  109 |       setIsEditing(true);
+
+D:\projects\pharmacy\src\app\dashboard\purchases\page.tsx:143:3
+  141 |   };
+  142 |
+> 143 |   const fetchSuppliers = async () => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 144 |     const { data } = await supabase.from('suppliers').select('*').order('name');
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 145 |     if (data) setSuppliers(data);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 146 |   };
+      | ^^^^^ `fetchSuppliers` is declared here
+  147 |
+  148 |   const fetchProducts = async () => {
+  149 |     const { data } = await supabase.from('products').select('*').order('name');                                                                                                                                                                                     react-hooks/immutability
+  107:5   error  Error: Cannot access variable before it is declared
+
+`fetchProducts` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\purchases\page.tsx:107:5
+  105 |   useEffect(() => {
+  106 |     fetchSuppliers();
+> 107 |     fetchProducts();
+      |     ^^^^^^^^^^^^^ `fetchProducts` accessed before it is declared
+  108 |     if (editId) {
+  109 |       setIsEditing(true);
+  110 |       loadPurchase(editId);
+
+D:\projects\pharmacy\src\app\dashboard\purchases\page.tsx:148:3
+  146 |   };
+  147 |
+> 148 |   const fetchProducts = async () => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 149 |     const { data } = await supabase.from('products').select('*').order('name');
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 150 |     if (data) setProducts(data);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 151 |   };
+      | ^^^^^ `fetchProducts` is declared here
+  152 |
+  153 |   const filteredProducts = useMemo(() => {
+  154 |     if (!searchQuery) return [];                                                                                                                                                                                                             react-hooks/immutability
+  110:7   error  Error: Cannot access variable before it is declared
+
+`loadPurchase` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\purchases\page.tsx:110:7
+  108 |     if (editId) {
+  109 |       setIsEditing(true);
+> 110 |       loadPurchase(editId);
+      |       ^^^^^^^^^^^^ `loadPurchase` accessed before it is declared
+  111 |     }
+  112 |   }, [editId]);
+  113 |
+
+D:\projects\pharmacy\src\app\dashboard\purchases\page.tsx:114:3
+  112 |   }, [editId]);
+  113 |
+> 114 |   const loadPurchase = async (id: string) => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 115 |     const { data: purchase } = await supabase.from('purchases').select('*').eq('id', id).single();
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 116 |     if (purchase) {
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 140 |     }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 141 |   };
+      | ^^^^^ `loadPurchase` is declared here
+  142 |
+  143 |   const fetchSuppliers = async () => {
+  144 |     const { data } = await supabase.from('suppliers').select('*').order('name');  react-hooks/immutability
+
+D:\projects\pharmacy\src\app\dashboard\purchases\returns\page.tsx
+    4:10   warning  'Plus' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+    4:44   warning  'CalendarIcon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+    4:113  warning  'CheckCircle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+   34:9    warning  'router' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   36:61   error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\projects\pharmacy\src\app\dashboard\purchases\returns\page.tsx:36:61
+  34 |   const router = useRouter();
+  35 |
+> 36 |   const [invoiceNumber, setInvoiceNumber] = useState(`RET-${Date.now().toString().slice(-6)}`);
+     |                                                             ^^^^^^^^^^ Cannot call impure function
+  37 |   const [supplierId, setSupplierId] = useState("");
+  38 |   const [suppliers, setSuppliers] = useState<any[]>([]);
+  39 |   const [notes, setNotes] = useState("");                                                                                                                                                                                                                                                                                                                                      react-hooks/purity
+   55:5    error    Error: Cannot access variable before it is declared
+
+`fetchSuppliers` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\purchases\returns\page.tsx:55:5
+  53 |
+  54 |   useEffect(() => {
+> 55 |     fetchSuppliers();
+     |     ^^^^^^^^^^^^^^ `fetchSuppliers` accessed before it is declared
+  56 |     fetchProducts();
+  57 |   }, []);
+  58 |
+
+D:\projects\pharmacy\src\app\dashboard\purchases\returns\page.tsx:59:3
+  57 |   }, []);
+  58 |
+> 59 |   const fetchSuppliers = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 60 |     const { data } = await supabase.from("suppliers").select("*").order("name");
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 61 |     if (data) setSuppliers(data);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 62 |   };
+     | ^^^^^ `fetchSuppliers` is declared here
+  63 |
+  64 |   const fetchProducts = async () => {
+  65 |     const { data } = await supabase.from("products").select("*").order("name");  react-hooks/immutability
+   56:5    error    Error: Cannot access variable before it is declared
+
+`fetchProducts` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\purchases\returns\page.tsx:56:5
+  54 |   useEffect(() => {
+  55 |     fetchSuppliers();
+> 56 |     fetchProducts();
+     |     ^^^^^^^^^^^^^ `fetchProducts` accessed before it is declared
+  57 |   }, []);
+  58 |
+  59 |   const fetchSuppliers = async () => {
+
+D:\projects\pharmacy\src\app\dashboard\purchases\returns\page.tsx:64:3
+  62 |   };
+  63 |
+> 64 |   const fetchProducts = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 65 |     const { data } = await supabase.from("products").select("*").order("name");
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 66 |     if (data) setProducts(data);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 67 |   };
+     | ^^^^^ `fetchProducts` is declared here
+  68 |
+  69 |   const filteredProducts = useMemo(() => {
+  70 |     if (!searchQuery) return [];                    react-hooks/immutability
+  230:29   error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\projects\pharmacy\src\app\dashboard\purchases\returns\page.tsx:230:29
+  228 |     
+  229 |     // Reset Form
+> 230 |     setInvoiceNumber(`RET-${Date.now().toString().slice(-6)}`);
+      |                             ^^^^^^^^^^ Cannot call impure function
+  231 |     setItems([]);
+  232 |     setNotes("");
+  233 |     setSupplierId("");                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/purity
+
+D:\projects\pharmacy\src\app\dashboard\reports\page.tsx
+   7:60  warning  'DollarSign' is defined but never used                 @typescript-eslint/no-unused-vars
+  33:10  warning  'exportCSV' is defined but never used                  @typescript-eslint/no-unused-vars
+  70:25  warning  'setMonthlyTarget' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\app\dashboard\sales\list\page.tsx
+   7:16  warning  'CardContent' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+  19:9   warning  'router' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  33:5   error    Error: Cannot access variable before it is declared
+
+`fetchSales` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\projects\pharmacy\src\app\dashboard\sales\list\page.tsx:33:5
+  31 |
+  32 |   useEffect(() => {
+> 33 |     fetchSales();
+     |     ^^^^^^^^^^ `fetchSales` accessed before it is declared
+  34 |     supabase.from('users').select('id, full_name, is_active, role:roles(name)').eq('is_active', true).then(({ data }) => {
+  35 |       if (data) setCashiers(data);
+  36 |     });
+
+D:\projects\pharmacy\src\app\dashboard\sales\list\page.tsx:39:3
+  37 |   }, [user]);
+  38 |
+> 39 |   const fetchSales = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 40 |     if (!user) return;
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 41 |     setLoading(true);
+     ΓÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 55 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 56 |   };
+     | ^^^^^ `fetchSales` is declared here
+  57 |
+  58 |   const handleOpenDetails = async (sale: any) => {
+  59 |     setSelectedSale(sale);  react-hooks/immutability
+  37:6   warning  React Hook useEffect has a missing dependency: 'fetchSales'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-hooks/exhaustive-deps
+
+D:\projects\pharmacy\src\app\dashboard\settings\page.tsx
+    7:3   warning  'ToggleLeft' is defined but never used            @typescript-eslint/no-unused-vars
+    7:15  warning  'ToggleRight' is defined but never used           @typescript-eslint/no-unused-vars
+    8:23  warning  'Key' is defined but never used                   @typescript-eslint/no-unused-vars
+    8:45  warning  'Filter' is defined but never used                @typescript-eslint/no-unused-vars
+    8:53  warning  'Check' is defined but never used                 @typescript-eslint/no-unused-vars
+    8:60  warning  'XCircle' is defined but never used               @typescript-eslint/no-unused-vars
+   55:9   warning  'posStore' is assigned a value but never used     @typescript-eslint/no-unused-vars
+   98:10  warning  'driversList' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  269:16  warning  'err' is defined but never used                   @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\app\dashboard\urgent-requests\page.tsx
+  19:10  warning  'isLoading' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\components\dashboard\sales-chart.tsx
+  4:15  warning  'BarChart' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\components\layout\sidebar.tsx
+  13:3  warning  'PlusSquare' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\components\pos\quick-dispense-modal.tsx
+  4:10  warning  'Search' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\components\settings\users-section.tsx
+   5:60  warning  'Filter' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+   5:82  warning  'XCircle' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+  89:6   warning  React Hook useEffect has a missing dependency: 'loadUsers'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\projects\pharmacy\src\store\auth-store.ts
+  61:11  warning  'get' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\projects\pharmacy\src\store\pos-store.ts
+  876:19  warning  'error' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 85 problems (16 errors, 69 warnings)
+
