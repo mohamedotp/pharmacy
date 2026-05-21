@@ -66,9 +66,9 @@ export default function LoginPage() {
               <br />
               <span className="text-cyan-300">بكفاءة عالية</span>
             </h2>
-            <p className="text-blue-200/80 text-base leading-relaxed max-w-md">
+            {/* <p className="text-blue-200/80 text-base leading-relaxed max-w-md">
               منصة SaaS متكاملة تتيح لك إدارة المخزون، المبيعات، الوصفات، والتقارير من مكان واحد
-            </p>
+            </p> */}
           </div>
 
           {/* Feature list */}
